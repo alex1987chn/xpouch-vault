@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "tauri-app",
+  "productName": "XPouch Vault",
   "version": "0.1.0",
-  "identifier": "com.alex1.tauri-app",
+  "identifier": "com.xpouch.vault",
   "build": {
     "beforeDevCommand": "pnpm dev",
     "devUrl": "http://localhost:1420",
@@ -12,9 +12,11 @@
   "app": {
     "windows": [
       {
-        "title": "tauri-app",
-        "width": 800,
-        "height": 600
+        "title": "XPouch Vault - AI 密钥保险箱",
+        "width": 1024,
+        "height": 700,
+        "minWidth": 800,
+        "minHeight": 500
       }
     ],
     "security": {

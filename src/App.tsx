@@ -1,51 +1,61 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import { invoke } from "@tauri-apps/api/core";
-import "./App.css";
+import { NavLink, Outlet } from "react-router";
+import { KeyRound, MessageSquareCode, Shell } from "lucide-react";
 
-function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
+const navItems = [
+  { to: "/", label: "密钥库", icon: KeyRound, end: true },
+  { to: "/sandbox", label: "沙盒", icon: MessageSquareCode, end: false },
+  { to: "/lobster", label: "龙虾监控", icon: Shell, end: false },
+] as const;
 
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", { name }));
-  }
-
+export default function App() {
   return (
-    <main className="container">
-      <h1>Welcome to Tauri + React</h1>
+    <div className="flex h-screen bg-gray-950 text-gray-100">
+      {/* Sidebar */}
+      <aside className="flex w-56 flex-shrink-0 flex-col border-r border-gray-800 bg-gray-900">
+        {/* Logo */}
+        <div className="flex items-center gap-2 border-b border-gray-800 px-5 py-4">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-cyan-500/20 text-cyan-400">
+            <KeyRound size={18} />
+          </div>
+          <span className="text-sm font-bold tracking-wide text-cyan-400">
+            XPouch Vault
+          </span>
+        </div>
 
-      <div className="row">
-        <a href="https://vite.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
+        {/* Nav */}
+        <nav className="flex-1 space-y-1 px-3 py-4">
+          {navItems.map(({ to, label, icon: Icon, end }) => (
+            <NavLink
+              key={to}
+              to={to}
+              end={end}
+              className={({ isActive }) =>
+                [
+                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                  isActive
+                    ? "bg-cyan-500/10 text-cyan-400 shadow-[inset_0_0_0_1px_rgba(6,182,212,0.2)]"
+                    : "text-gray-400 hover:bg-gray-800 hover:text-gray-200",
+                ].join(" ")
+              }
+            >
+              <Icon size={18} />
+              {label}
+            </NavLink>
+          ))}
+        </nav>
 
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Greet</button>
-      </form>
-      <p>{greetMsg}</p>
-    </main>
+        {/* Footer */}
+        <div className="border-t border-gray-800 px-5 py-3">
+          <p className="text-[10px] tracking-widest text-gray-600 uppercase">
+            v0.1.0
+          </p>
+        </div>
+      </aside>
+
+      {/* Main content */}
+      <main className="flex-1 overflow-auto">
+        <Outlet />
+      </main>
+    </div>
   );
 }
-
-export default App;

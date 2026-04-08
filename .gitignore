@@ -26,6 +26,9 @@ dist-ssr
 # Rust / Tauri
 src-tauri/target/
 
+# AI context (local dev only, not for repo)
+.ai/
+
 # Environment
 .env
 .env.*
