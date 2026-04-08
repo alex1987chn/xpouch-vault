@@ -199,7 +199,32 @@ pub fn update_entry(
     })
 }
 
-/// 解密指定条目的 API Key（用于沙盒调用等场景，不返回给前端列表）
+/// 获取单个条目（用于探活等场景）
+pub fn get_entry(conn: &Connection, id: &str) -> Result<VaultEntry, String> {
+    conn.query_row(
+        "SELECT id, provider, encrypted_key, masked_key, name, category,
+                created_at, updated_at, last_tested, is_valid
+         FROM vault_entries WHERE id = ?1",
+        params![id],
+        |row| {
+            Ok(VaultEntry {
+                id: row.get(0)?,
+                provider: row.get(1)?,
+                encrypted_key: row.get(2)?,
+                masked_key: row.get(3)?,
+                name: row.get(4)?,
+                category: row.get(5)?,
+                created_at: row.get(6)?,
+                updated_at: row.get(7)?,
+                last_tested: row.get(8)?,
+                is_valid: row.get(9)?,
+            })
+        },
+    )
+    .map_err(|e| e.to_string())
+}
+
+/// 解密指定条目的 API Key（用于复制/探活等场景）
 pub fn decrypt_entry_key(conn: &Connection, id: &str) -> Result<String, String> {
     let encrypted: String = conn
         .query_row(

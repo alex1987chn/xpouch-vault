@@ -1,6 +1,7 @@
 mod commands;
 mod crypto;
 mod db;
+mod node;
 
 use std::path::PathBuf;
 
@@ -27,7 +28,8 @@ pub fn run() {
             // 初始化表结构
             {
                 let conn = db_state.conn.lock().expect("Failed to lock DB connection");
-                db::init_schema(&conn).expect("Failed to initialize schema");
+                db::init_schema(&conn).expect("Failed to initialize vault schema");
+                node::init_node_schema(&conn).expect("Failed to initialize node schema");
             }
 
             app.manage(db_state);
@@ -38,6 +40,13 @@ pub fn run() {
             commands::add_api_key,
             commands::delete_api_key,
             commands::update_api_key,
+            commands::reveal_api_key,
+            commands::ping_api_key,
+            commands::list_nodes,
+            commands::add_node,
+            commands::delete_node,
+            commands::update_node,
+            commands::fetch_nodes_status,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

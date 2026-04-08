@@ -1,9 +1,9 @@
 import { NavLink, Outlet } from "react-router";
-import { KeyRound, MessageSquareCode, Shell } from "lucide-react";
+import { KeyRound, Shell } from "lucide-react";
+import Toast from "./components/Toast";
 
 const navItems = [
   { to: "/", label: "密钥库", icon: KeyRound, end: true },
-  { to: "/sandbox", label: "沙盒", icon: MessageSquareCode, end: false },
   { to: "/lobster", label: "龙虾监控", icon: Shell, end: false },
 ] as const;
 
@@ -56,6 +56,8 @@ export default function App() {
       <main className="flex-1 overflow-auto">
         <Outlet />
       </main>
+
+      <Toast />
     </div>
   );
 }

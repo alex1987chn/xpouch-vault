@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { invoke } from "@tauri-apps/api/core";
 import type { VaultEntry, VaultFormData, KeyProvider } from "../types/vault";
+import { useToastStore } from "./toastStore";
 
 // ── Tauri Command 类型映射 ──
 
@@ -16,6 +17,12 @@ interface RawVaultEntry {
   updated_at: string;
   last_tested: string | null;
   is_valid: boolean | null;
+}
+
+interface RawPingResult {
+  success: boolean;
+  latency_ms: number;
+  message: string;
 }
 
 function toVaultEntry(raw: RawVaultEntry): VaultEntry {
@@ -42,6 +49,10 @@ interface VaultState {
   filterProvider: KeyProvider | "all";
   loading: boolean;
   error: string | null;
+  // 正在 ping 的 entry id 集合
+  pingingIds: Set<string>;
+  // 已揭示明文的缓存 id -> plaintext
+  revealedKeys: Record<string, string>;
 
   // Actions
   fetchEntries: () => Promise<void>;
@@ -51,6 +62,9 @@ interface VaultState {
   selectEntry: (id: string | null) => void;
   setSearchQuery: (query: string) => void;
   setFilterProvider: (provider: KeyProvider | "all") => void;
+  revealKey: (id: string) => Promise<string>;
+  copyKey: (id: string) => Promise<void>;
+  pingKey: (id: string) => Promise<void>;
 }
 
 export const useVaultStore = create<VaultState>((set, get) => ({
@@ -60,6 +74,8 @@ export const useVaultStore = create<VaultState>((set, get) => ({
   filterProvider: "all",
   loading: false,
   error: null,
+  pingingIds: new Set(),
+  revealedKeys: {},
 
   fetchEntries: async () => {
     set({ loading: true, error: null });
@@ -122,4 +138,43 @@ export const useVaultStore = create<VaultState>((set, get) => ({
   selectEntry: (id) => set({ selectedId: id }),
   setSearchQuery: (query) => set({ searchQuery: query }),
   setFilterProvider: (provider) => set({ filterProvider: provider }),
+
+  revealKey: async (id) => {
+    const cached = get().revealedKeys[id];
+    if (cached) return cached;
+
+    const plaintext = await invoke<string>("reveal_api_key", { id });
+    set((s) => ({
+      revealedKeys: { ...s.revealedKeys, [id]: plaintext },
+    }));
+    return plaintext;
+  },
+
+  copyKey: async (id) => {
+    const plaintext = await get().revealKey(id);
+    await navigator.clipboard.writeText(plaintext);
+    useToastStore.getState().addToast("已复制到剪贴板", "success");
+  },
+
+  pingKey: async (id) => {
+    set((s) => ({
+      pingingIds: new Set([...s.pingingIds, id]),
+    }));
+
+    try {
+      const result = await invoke<RawPingResult>("ping_api_key", { id });
+      useToastStore.getState().addToast(
+        result.success ? `✅ ${result.message}` : `❌ ${result.message}`,
+        result.success ? "success" : "error",
+      );
+    } catch (e) {
+      useToastStore.getState().addToast(`❌ 探活失败: ${e}`, "error");
+    } finally {
+      set((s) => {
+        const next = new Set(s.pingingIds);
+        next.delete(id);
+        return { pingingIds: next };
+      });
+    }
+  },
 }));

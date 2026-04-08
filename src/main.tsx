@@ -5,7 +5,6 @@ import App from "./App";
 import "./index.css";
 
 const VaultPage = lazy(() => import("./pages/VaultPage"));
-const SandboxPage = lazy(() => import("./pages/SandboxPage"));
 const LobsterPage = lazy(() => import("./pages/LobsterPage"));
 
 function PageLoader() {
@@ -26,14 +25,6 @@ createRoot(document.getElementById("root")!).render(
             element={
               <Suspense fallback={<PageLoader />}>
                 <VaultPage />
-              </Suspense>
-            }
-          />
-          <Route
-            path="sandbox"
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <SandboxPage />
               </Suspense>
             }
           />
