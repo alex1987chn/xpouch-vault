@@ -11,15 +11,16 @@ A secure desktop vault for managing AI API keys and monitoring OpenClaw gateway 
 - **Health Ping** — Async key validation via Rust backend (supports OpenAI, Anthropic, Google AI, DeepSeek)
 - **Multi-Provider** — Supports OpenAI, Anthropic, Google AI, DeepSeek, and custom providers
 - **Categorized Management** — Organize keys by environment (production, dev/test, personal, backup)
+- **Rename Keys** — Inline edit dialog to rename keys without re-creating
 - **Masked Display** — Keys are shown as masked strings (e.g., `sk-...7xYz`) in the UI
 
 ### Lobster — OpenClaw Gateway Monitoring
 
 - **WebSocket Real-time Monitoring** — Connects to OpenClaw gateways via WS protocol (health + status methods)
 - **Node CRUD** — Add, edit, delete gateway nodes with encrypted token storage
-- **Dashboard** — Online/offline status, gateway version, uptime, channels, sessions, skills, tasks, heartbeat
+- **Dashboard** — Online/offline status, gateway version, uptime, channels, agents, cron jobs, presence, sessions, skills, tasks, heartbeat
 - **Auto Refresh** — 30-second interval auto-refresh for all node statuses
-- **Detail Sidebar** — Select a node card to see full details in the sidebar
+- **Detail Sidebar** — Select a node card to see full details in a wide sidebar (channels with running/error status, agent list with model/sessions, cron jobs with schedule, online devices)
 
 ### Shared
 
@@ -78,7 +79,7 @@ Produces platform-specific installers in `src-tauri/target/release/bundle/`.
 xpouch-vault/
 ├── src/                      # Frontend (React + TypeScript)
 │   ├── components/           # Business components
-│   │   ├── KeyCard.tsx       # Key card (copy/reveal/ping/delete)
+│   │   ├── KeyCard.tsx       # Key card (copy/reveal/ping/edit/delete)
 │   │   ├── AddKeyDialog.tsx  # Add key dialog
 │   │   ├── NodeCard.tsx      # Node card (online status/channels/tasks)
 │   │   ├── AddNodeDialog.tsx # Add/edit node dialog
@@ -174,9 +175,10 @@ openclaw gateway restart
 2. Receive: connect.challenge event
 3. Send: connect request (client.id: "openclaw-control-ui", client.mode: "ui")
 4. Receive: hello-ok (with snapshot.uptimeMs)
-5. Send: health request → channels, sessions, skills, tokens, nodes
-6. Send: status request → runtimeVersion, heartbeat, tasks
-7. Responses matched by request ID (skip interleaved event pushes)
+5. Send: health request → channels (with running/configured/error), agents (name/model/sessions), sessions, skills, tokens, nodes
+6. Send: cron.list request → cron jobs (name/schedule/enabled/nextRun)
+7. Send: status request → runtimeVersion, heartbeat, tasks
+8. Responses matched by request ID (skip interleaved event pushes)
 ```
 
 ## License

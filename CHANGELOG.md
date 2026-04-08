@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Node CRUD: add, edit, delete gateway nodes with encrypted token storage
 - WebSocket real-time status probe via OpenClaw WS-first protocol
 - Node card component with online/offline indicator, channels, and task stats
-- Node detail sidebar: gateway version, uptime, sessions, skills, connections, channels, tasks, heartbeat
+- Node detail sidebar: gateway version, uptime, sessions, skills, connections, channels (running/configured/error), agents (name/model/sessions/heartbeat), cron jobs (name/schedule/enabled), presence devices, tasks, heartbeat
 - AddNodeDialog with name/URL/token form and edit support
 - 30-second auto-refresh for all node statuses
 - `nodeStore` (Zustand) with CRUD actions + `refreshStatus` + `selectNode` + `setEditingNode`
@@ -23,10 +23,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `sanitize_url()` — clean whitespace, zero-width chars, fullwidth punctuation
   - `http_to_ws()` — convert HTTP URL to WS URL with `/ws` path
   - `extract_origin()` — extract `scheme://host:port` for Origin header
-  - `ws_probe_status()` — full WS handshake: connect → challenge → hello-ok → health → status
+  - `ws_probe_status()` — full WS handshake: connect → challenge → hello-ok → health → cron.list → status
   - `read_ws_response()` — match response by request ID, skip interleaved event pushes
 - Fallback strategy: health failure falls back to hello-ok snapshot data, status failure uses empty object
 - Node types: `OpenClawNode`, `NodeStatus`, `ChannelInfo`, `TasksInfo`, `GatewayInfo`, etc. with snake_case → camelCase mapping
+- Key rename: edit dialog on KeyCard to change key name without re-creating
+- Expanded node detail sidebar (w-[420px]) to show full channel/agent/cron/presence info
+- Key card timestamp now shows hour and minute (was date-only)
 
 ### Changed
 
