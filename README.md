@@ -62,8 +62,8 @@ A secure, elegant desktop vault for managing AI API keys and monitoring OpenClaw
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) 18+
-- [pnpm](https://pnpm.io/) 8+
+- [Node.js](https://nodejs.org/) 20+
+- [pnpm](https://pnpm.io/) 9+
 - [Rust](https://www.rust-lang.org/tools/install) (stable)
 - [Tauri CLI](https://v2.tauri.app/start/prerequisites/)
 
