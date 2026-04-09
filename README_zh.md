@@ -9,6 +9,9 @@
 [![React](https://img.shields.io/badge/React-19-61dafb?logo=react)](https://react.dev)
 [![Rust](https://img.shields.io/badge/Rust-Stable-000000?logo=rust)](https://www.rust-lang.org)
 
+<img src="https://github.com/user-attachments/assets/21eb77a8-c6f0-4270-b054-7d6558c46e4c" alt="XPouch Vault - 密钥库" width="900">
+<img src="https://github.com/user-attachments/assets/fc80092f-1a80-4c32-a799-369902519460" alt="XPouch Vault - 龙虾监控" width="900">
+
 > **设计理念** — 源自 Claude 的温暖极简美学：石白底色、赤陶橙点缀、留白呼吸感、细腻阴影。
 
 ## 功能特性

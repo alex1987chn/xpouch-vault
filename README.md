@@ -9,6 +9,9 @@ A secure, elegant desktop vault for managing AI API keys and monitoring OpenClaw
 [![React](https://img.shields.io/badge/React-19-61dafb?logo=react)](https://react.dev)
 [![Rust](https://img.shields.io/badge/Rust-Stable-000000?logo=rust)](https://www.rust-lang.org)
 
+<img src="https://github.com/user-attachments/assets/21eb77a8-c6f0-4270-b054-7d6558c46e4c" alt="XPouch Vault - Key Vault" width="900">
+<img src="https://github.com/user-attachments/assets/fc80092f-1a80-4c32-a799-369902519460" alt="XPouch Vault - Lobster Monitor" width="900">
+
 > **Design Philosophy** — Inspired by Claude's warm, minimal aesthetic: stone whites, tawny orange accents, generous spacing, and subtle shadows.
 
 ## Features
