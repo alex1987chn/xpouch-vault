@@ -2,6 +2,11 @@
 
 A secure, elegant desktop vault for managing AI API keys and monitoring OpenClaw gateway nodes. Built with Tauri 2.x, React 19, and Rust.
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![Tauri](https://img.shields.io/badge/Tauri-2.x-24C8D8?logo=tauri)](https://v2.tauri.app)
+[![React](https://img.shields.io/badge/React-19-61dafb?logo=react)](https://react.dev)
+[![Rust](https://img.shields.io/badge/Rust-Stable-000000?logo=rust)](https://www.rust-lang.org)
+
 > **Design Philosophy** — Inspired by Claude's warm, minimal aesthetic: stone whites, tawny orange accents, generous spacing, and subtle shadows.
 
 ## Features
