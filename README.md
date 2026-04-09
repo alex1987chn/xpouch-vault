@@ -2,6 +2,8 @@
 
 A secure, elegant desktop vault for managing AI API keys and monitoring OpenClaw gateway nodes. Built with Tauri 2.x, React 19, and Rust.
 
+[**中文文档**](./README_zh.md)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![Tauri](https://img.shields.io/badge/Tauri-2.x-24C8D8?logo=tauri)](https://v2.tauri.app)
 [![React](https://img.shields.io/badge/React-19-61dafb?logo=react)](https://react.dev)
