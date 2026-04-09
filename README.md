@@ -90,6 +90,13 @@ Produces platform-specific installers in `src-tauri/target/release/bundle/`:
 
 > **Note:** You must build on the target platform. Use GitHub Actions CI for cross-platform releases.
 
+### Installation Notes
+
+This app is **not code-signed** (no paid certificate). You may encounter OS warnings on first launch:
+
+- **Windows**: SmartScreen may show "Windows protected your PC" — click **More info** → **Run anyway**
+- **macOS**: You may see "cannot be opened because it is from an unidentified developer" — **right-click** the app → **Open**, or go to **System Settings → Privacy & Security → Open Anyway**
+
 ## Project Structure
 
 ```

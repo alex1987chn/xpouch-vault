@@ -1,5 +1,7 @@
 ﻿import { NavLink, Outlet } from "react-router";
 import { KeyRound, Shell } from "lucide-react";
+import { getVersion } from "@tauri-apps/api/app";
+import { useState, useEffect } from "react";
 import Toast from "./components/Toast";
 import VaultLogo from "./components/VaultLogo";
 import LanguageSwitcher from "./components/LanguageSwitcher";
@@ -12,6 +14,11 @@ const navKeys = [
 
 export default function App() {
   const { t } = useI18n();
+  const [appVersion, setAppVersion] = useState("");
+
+  useEffect(() => {
+    getVersion().then((v) => setAppVersion(v)).catch(() => setAppVersion(""));
+  }, []);
 
   return (
     <div className="flex h-screen" style={{ background: "var(--bg-base)", color: "var(--text-primary)" }}>
@@ -64,7 +71,7 @@ export default function App() {
         {/* Footer */}
         <div className="border-t px-5 py-3 flex items-center justify-between" style={{ borderColor: "var(--border-subtle)" }}>
           <p className="text-[10px] tracking-wide" style={{ color: "var(--text-tertiary)" }}>
-            v0.1.0
+            {appVersion ? `v${appVersion}` : ""}
           </p>
           <LanguageSwitcher />
         </div>

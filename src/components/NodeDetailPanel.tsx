@@ -1,4 +1,4 @@
-﻿import { X, Globe, KeyRound, Cpu, Clock, Wifi, WifiOff, Radio, Bot, Calendar, Users, ListChecks } from "lucide-react";
+﻿import { X, Globe, KeyRound, Cpu, Clock, Wifi, WifiOff, Radio, Bot, Calendar, Users, ListChecks, Timer } from "lucide-react";
 import type { OpenClawNode, NodeStatus } from "../types/node";
 import { formatUptime, formatDateTime } from "../utils/format";
 import { StatCard, StatSection, ChannelBadge } from "./ui/StatCard";
@@ -15,7 +15,7 @@ export default function NodeDetailPanel({ node, status, onClose }: NodeDetailPan
 
   return (
     <div
-      className="w-[420px] shrink-0 border-l overflow-auto"
+      className="h-full border-l overflow-auto shadow-[-4px_0_12px_rgba(0,0,0,0.06)]"
       style={{
         borderColor: "var(--border-default)",
         background: "var(--bg-surface)",
@@ -64,6 +64,12 @@ export default function NodeDetailPanel({ node, status, onClose }: NodeDetailPan
             <span className="text-xs font-medium" style={{ color: "var(--text-tertiary)" }}>{t("detail.createdAt")}</span>
             <p className="text-xs mt-0.5" style={{ color: "var(--text-secondary)" }}>{formatDateTime(node.createdAt)}</p>
           </div>
+          {node.updatedAt !== node.createdAt && (
+            <div>
+              <span className="text-xs font-medium" style={{ color: "var(--text-tertiary)" }}>{t("detail.updatedAt")}</span>
+              <p className="text-xs mt-0.5" style={{ color: "var(--text-secondary)" }}>{formatDateTime(node.updatedAt)}</p>
+            </div>
+          )}
         </div>
 
         {status && (
@@ -77,8 +83,8 @@ export default function NodeDetailPanel({ node, status, onClose }: NodeDetailPan
               <span className={`text-xs font-medium`} style={{ color: status.online ? "var(--success)" : "var(--error)" }}>
                 {status.online ? t("detail.online") : t("detail.offlineStatus")}
               </span>
-              {status.latencyMs > 0 && (
-                <span className="text-xs" style={{ color: "var(--text-tertiary)" }}>{status.latencyMs}ms</span>
+              {status.latencyMs >= 0 && (
+                <span className="text-xs" style={{ color: "var(--text-tertiary)" }}>· {status.latencyMs}ms</span>
               )}
             </div>
 
@@ -102,7 +108,8 @@ export default function NodeDetailPanel({ node, status, onClose }: NodeDetailPan
                   </div>
                 )}
                 {(status.heartbeatSeconds != null || status.heartbeatInterval != null) && (
-                  <div className="text-xs" style={{ color: "var(--text-tertiary)" }}>
+                  <div className="flex items-center gap-2 text-xs" style={{ color: "var(--text-secondary)" }}>
+                    <Timer size={12} style={{ color: "var(--text-tertiary)" }} />
                     {t("detail.heartbeat", { seconds: status.heartbeatSeconds ?? (status.heartbeatInterval! / 1000) })}
                   </div>
                 )}

@@ -1,6 +1,6 @@
 ﻿import type { OpenClawNode, NodeStatus } from "../types/node";
 import { useNodeStore } from "../store/nodeStore";
-import { Globe, Trash2, Pencil, ChevronRight, Clock, Cpu, Zap, Users, Activity, ListChecks, Bot, Calendar } from "lucide-react";
+import { Globe, Trash2, Pencil, ChevronRight, Clock, Cpu, Zap, Users, Activity, ListChecks, Bot, Calendar, Wifi } from "lucide-react";
 import ActionButton from "./ui/ActionButton";
 import ConfirmDialog from "./ui/ConfirmDialog";
 import { ChannelBadge } from "./ui/StatCard";
@@ -110,7 +110,9 @@ export default function NodeCard({ node, status, isSelected, onEdit }: NodeCardP
                 {status.sessions?.active != null && (
                   <div className="flex items-center gap-1.5 text-xs" style={{ color: "var(--text-secondary)" }}>
                     <Activity size={11} style={{ color: "var(--text-tertiary)" }} />
-                    {t("node.sessions", { count: status.sessions.active })}
+                    {status.sessions.total != null
+                      ? t("node.sessionsWithTotal", { active: status.sessions.active, total: status.sessions.total })
+                      : t("node.sessions", { count: status.sessions.active })}
                   </div>
                 )}
                 {status.agents.length > 0 && (
@@ -134,7 +136,9 @@ export default function NodeCard({ node, status, isSelected, onEdit }: NodeCardP
                 {status.tasks && status.tasks.total != null && (
                   <div className="flex items-center gap-1.5 text-xs" style={{ color: "var(--text-secondary)" }}>
                     <ListChecks size={11} style={{ color: "var(--text-tertiary)" }} />
-                    {t("node.tasks", { succeeded: status.tasks.succeeded ?? 0, total: status.tasks.total })}
+                    {status.tasks.active != null && status.tasks.active > 0
+                      ? t("node.tasksWithActive", { active: status.tasks.active, succeeded: status.tasks.succeeded ?? 0, total: status.tasks.total })
+                      : t("node.tasks", { succeeded: status.tasks.succeeded ?? 0, total: status.tasks.total })}
                   </div>
                 )}
                 {status.cronJobs.length > 0 && (
@@ -151,6 +155,7 @@ export default function NodeCard({ node, status, isSelected, onEdit }: NodeCardP
                   </div>
                 )}
                 <div className="flex items-center gap-1.5 text-xs" style={{ color: "var(--text-tertiary)" }}>
+                  <Wifi size={11} />
                   {status.latencyMs}ms
                 </div>
               </div>
@@ -169,10 +174,8 @@ export default function NodeCard({ node, status, isSelected, onEdit }: NodeCardP
         )}
 
         {isSelected && (
-          <div className="mt-3 flex items-center justify-end">
-            <span className="flex items-center gap-1 text-xs" style={{ color: "var(--accent)" }}>
-              {t("node.viewDetail")} <ChevronRight size={12} />
-            </span>
+          <div className="mt-3 flex items-center justify-end gap-1 text-xs" style={{ color: "var(--accent)" }}>
+            {t("node.viewDetail")} <ChevronRight size={12} />
           </div>
         )}
       </div>

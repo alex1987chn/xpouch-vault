@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AlertCircle } from "lucide-react";
 import { useNodeStore } from "../store/nodeStore";
 import type { AddNodeFormData, OpenClawNode } from "../types/node";
 import Dialog from "./ui/Dialog";
@@ -76,6 +77,12 @@ export default function AddNodeDialog({ open, onClose, editingNode, onSubmit }: 
           onChange={(e) => setForm((f) => ({ ...f, endpointUrl: e.target.value }))}
           placeholder={t("addNode.urlPlaceholder")}
         />
+        <div className="flex gap-2 -mt-2 px-0.5">
+          <AlertCircle size={14} className="flex-shrink-0 mt-0.5" style={{ color: "var(--accent)" }} />
+          <p className="text-xs leading-relaxed" style={{ color: "var(--text-tertiary)" }}>
+            {t("addNode.urlTip")}
+          </p>
+        </div>
 
         <Input
           label={t("addNode.tokenLabel")}

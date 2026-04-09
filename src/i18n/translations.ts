@@ -83,7 +83,11 @@ const translations = {
     "lobster.refresh": "刷新",
     "lobster.addNode": "添加节点",
     "lobster.loading": "加载中...",
-    "lobster.empty": "暂无节点，点击上方按钮添加",
+    "lobster.emptyTitle": "接入你的 OpenClaw",
+    "lobster.setupGuide": "接入前请完成以下配置：",
+    "lobster.step1": "在 OpenClaw 设置中将监听地址改为 0.0.0.0（默认 localhost 无法远程连接）",
+    "lobster.step2": "输入 OpenClaw 的外部访问地址（含端口号）",
+    "lobster.step3": "填入访问令牌（Token）",
 
     // Node Card
     "node.editNode": "编辑节点",
@@ -94,9 +98,11 @@ const translations = {
     "node.viewDetail": "查看详情",
     "node.offline": "离线",
     "node.sessions": "{count} 会话",
+    "node.sessionsWithTotal": "{active}/{total} 会话",
     "node.skills": "{enabled}/{total} 技能",
     "node.connections": "{count} 连接",
     "node.tasks": "{succeeded}/{total} 任务",
+    "node.tasksWithActive": "{active} 进行 / {succeeded}/{total} 任务",
     "node.cronJobs": "{count} 定时任务",
 
     // Node Detail Panel
@@ -105,6 +111,7 @@ const translations = {
     "detail.gatewayUrl": "网关 URL",
     "detail.token": "Token",
     "detail.createdAt": "创建时间",
+    "detail.updatedAt": "更新时间",
     "detail.online": "在线",
     "detail.offlineStatus": "离线",
     "detail.version": "版本：v{version}",
@@ -148,8 +155,7 @@ const translations = {
     "addNode.tokenPlaceholder": "输入访问令牌",
     "addNode.submit": "添加",
     "addNode.update": "更新",
-
-    // Common
+    "addNode.urlTip": "确保网关已将监听地址设置为 0.0.0.0，否则无法远程连接。URL 格式：http://IP:PORT 或 http://IP:PORT/ShareCode",
     "common.cancel": "取消",
     "common.confirm": "确认",
     "common.delete": "删除",
@@ -223,7 +229,11 @@ const translations = {
     "lobster.refresh": "Refresh",
     "lobster.addNode": "Add Node",
     "lobster.loading": "Loading...",
-    "lobster.empty": "No nodes yet. Click above to add one",
+    "lobster.emptyTitle": "Connect your OpenClaw",
+    "lobster.setupGuide": "Complete these steps before connecting:",
+    "lobster.step1": "Set the listen address to 0.0.0.0 in OpenClaw settings (localhost blocks remote connections)",
+    "lobster.step2": "Enter your OpenClaw's external access URL (include port number)",
+    "lobster.step3": "Enter the access token",
 
     // Node Card
     "node.editNode": "Edit node",
@@ -234,9 +244,11 @@ const translations = {
     "node.viewDetail": "View details",
     "node.offline": "Offline",
     "node.sessions": "{count} sessions",
+    "node.sessionsWithTotal": "{active}/{total} sessions",
     "node.skills": "{enabled}/{total} skills",
     "node.connections": "{count} connections",
     "node.tasks": "{succeeded}/{total} tasks",
+    "node.tasksWithActive": "{active} active / {succeeded}/{total} tasks",
     "node.cronJobs": "{count} cron jobs",
 
     // Node Detail Panel
@@ -245,6 +257,7 @@ const translations = {
     "detail.gatewayUrl": "Gateway URL",
     "detail.token": "Token",
     "detail.createdAt": "Created",
+    "detail.updatedAt": "Updated",
     "detail.online": "Online",
     "detail.offlineStatus": "Offline",
     "detail.version": "Version: v{version}",
@@ -288,8 +301,7 @@ const translations = {
     "addNode.tokenPlaceholder": "Enter access token",
     "addNode.submit": "Add",
     "addNode.update": "Update",
-
-    // Common
+    "addNode.urlTip": "Ensure the gateway listen address is set to 0.0.0.0, otherwise remote connections are blocked. URL format: http://IP:PORT or http://IP:PORT/ShareCode",
     "common.cancel": "Cancel",
     "common.confirm": "Confirm",
     "common.delete": "Delete",
@@ -363,7 +375,11 @@ const translations = {
     "lobster.refresh": "更新",
     "lobster.addNode": "ノードを追加",
     "lobster.loading": "読み込み中...",
-    "lobster.empty": "ノードがありません。上のボタンで追加",
+    "lobster.emptyTitle": "OpenClawに接続",
+    "lobster.setupGuide": "接続前に以下の設定を完了してください：",
+    "lobster.step1": "OpenClaw設定でリッスンアドレスを0.0.0.0に変更（デフォルトのlocalhostではリモート接続不可）",
+    "lobster.step2": "OpenClawの外部アクセスURLを入力（ポート番号を含む）",
+    "lobster.step3": "アクセストークンを入力",
 
     // Node Card
     "node.editNode": "ノードを編集",
@@ -374,9 +390,11 @@ const translations = {
     "node.viewDetail": "詳細を見る",
     "node.offline": "オフライン",
     "node.sessions": "{count} セッション",
+    "node.sessionsWithTotal": "{active}/{total} セッション",
     "node.skills": "{enabled}/{total} スキル",
     "node.connections": "{count} 接続",
     "node.tasks": "{succeeded}/{total} タスク",
+    "node.tasksWithActive": "{active} 進行 / {succeeded}/{total} タスク",
     "node.cronJobs": "{count} 定期ジョブ",
 
     // Node Detail Panel
@@ -385,6 +403,7 @@ const translations = {
     "detail.gatewayUrl": "ゲートウェイURL",
     "detail.token": "トークン",
     "detail.createdAt": "作成日時",
+    "detail.updatedAt": "更新日時",
     "detail.online": "オンライン",
     "detail.offlineStatus": "オフライン",
     "detail.version": "バージョン：v{version}",
@@ -428,8 +447,7 @@ const translations = {
     "addNode.tokenPlaceholder": "アクセストークンを入力",
     "addNode.submit": "追加",
     "addNode.update": "更新",
-
-    // Common
+    "addNode.urlTip": "ゲートウェイのリッスンアドレスが0.0.0.0に設定されていることを確認してください。デフォルトではリモート接続できません。URL形式：http://IP:PORT または http://IP:PORT/ShareCode",
     "common.cancel": "キャンセル",
     "common.confirm": "確認",
     "common.delete": "削除",

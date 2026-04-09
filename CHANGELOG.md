@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- **Lobster Detail Panel** — Changed from flex-shrink side-by-side layout to overlay drawer (absolute positioned), card grid no longer compresses when detail is open
+- **Detail Panel Responsiveness** — Panel width now uses `max-w-[420px]` with `w-full`, adapting to smaller screens; `h-full` prevents bottom whitespace on large screens; added left shadow for depth
+- **Empty State Copy** — Replaced "开始监控你的 OpenClaw 网关" with "接入你的 OpenClaw"; removed "网关" jargon from step descriptions (zh/en/ja)
+- **App Version** — Left sidebar version now reads dynamically from `tauri.conf.json` via `getVersion()` API instead of hardcoded string
+
+### Added
+
+- **Card Info Enhancement** — Sessions now shows `active/total`; Tasks shows `active 进行中` count when > 0; Latency gets a Wifi icon label
+- **Detail Panel Fields** — Added `updatedAt` (shown only when different from `createdAt`); heartbeat now has Timer icon; latency displayed inline with online status
+
+### Fixed
+
+- Card grid shrinking when detail panel opens — panel now overlays instead of pushing content
+- Hardcoded `v0.1.0` in sidebar footer — now auto-syncs with `tauri.conf.json` version
+
 ## [0.3.0] - 2026-04-09
 
 ### Added

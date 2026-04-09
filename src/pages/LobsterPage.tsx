@@ -1,5 +1,5 @@
 ﻿import { useState, useEffect, useMemo, useCallback } from "react";
-import { Plus, RefreshCw, Loader2, Shell } from "lucide-react";
+import { Plus, RefreshCw, Loader2, Shell, Settings, Globe, KeyRound } from "lucide-react";
 import { useNodeStore } from "../store/nodeStore";
 import NodeCard from "../components/NodeCard";
 import AddNodeDialog from "../components/AddNodeDialog";
@@ -100,12 +100,49 @@ export default function LobsterPage() {
         }
       />
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="relative flex flex-1 overflow-hidden">
         <div className="flex-1 overflow-auto p-8" style={{ background: "var(--bg-base)" }}>
           {loading ? (
             <EmptyState icon={Loader2} title={t("lobster.loading")} iconClassName="animate-spin" />
           ) : nodes.length === 0 ? (
-            <EmptyState icon={Shell} title={t("lobster.empty")} />
+            <EmptyState icon={Shell} title={t("lobster.emptyTitle")}>
+              <div className="max-w-md w-full rounded-2xl p-6 space-y-5" style={{ background: "var(--bg-surface)", border: "1px solid var(--border-default)" }}>
+                <p className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
+                  {t("lobster.setupGuide")}
+                </p>
+                <div className="space-y-4">
+                  {[
+                    { icon: Settings, text: t("lobster.step1"), code: '"bind": "0.0.0.0"' },
+                    { icon: Globe, text: t("lobster.step2"), code: "http://IP:PORT" },
+                    { icon: KeyRound, text: t("lobster.step3"), code: "" },
+                  ].map((step, i) => (
+                    <div key={i} className="flex gap-3">
+                      <div className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold" style={{ background: "var(--accent-light)", color: "var(--accent)" }}>
+                        {i + 1}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm" style={{ color: "var(--text-secondary)" }}>{step.text}</p>
+                        {step.code && (
+                          <code className="mt-1 block text-xs px-2 py-1 rounded-lg" style={{ background: "var(--bg-muted)", color: "var(--accent)" }}>
+                            {step.code}
+                          </code>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  onClick={() => { setEditingNode(null); setDialogOpen(true); }}
+                  className="w-full flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-white transition-colors"
+                  style={{ background: "var(--accent)" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "var(--accent-hover)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "var(--accent)")}
+                >
+                  <Plus size={16} />
+                  {t("lobster.addNode")}
+                </button>
+              </div>
+            </EmptyState>
           ) : (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
               {nodes.map((node) => (
@@ -116,11 +153,13 @@ export default function LobsterPage() {
         </div>
 
         {selectedNode && (
-          <NodeDetailPanel
-            node={selectedNode}
-            status={selectedStatus}
-            onClose={() => selectNode(null)}
-          />
+          <div className="absolute right-0 top-0 bottom-0 z-10 w-full max-w-[420px]">
+            <NodeDetailPanel
+              node={selectedNode}
+              status={selectedStatus}
+              onClose={() => selectNode(null)}
+            />
+          </div>
         )}
       </div>
 
