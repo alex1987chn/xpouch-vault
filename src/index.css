@@ -6,3 +6,57 @@ body,
   height: 100%;
   margin: 0;
 }
+
+/* ── Claude-style Color Tokens ── */
+:root {
+  --bg-base: #faf9f7;        /* stone-50 warm white */
+  --bg-surface: #ffffff;      /* pure white cards */
+  --bg-muted: #f5f4f0;       /* stone-100 subtle bg */
+  --bg-hover: #e7e5e0;       /* stone-200 hover */
+  --border-default: #e7e5e0; /* stone-200 */
+  --border-subtle: #f5f4f0;  /* stone-100 */
+  --text-primary: #1c1917;   /* stone-900 */
+  --text-secondary: #57534e; /* stone-600 */
+  --text-tertiary: #a8a29e;  /* stone-400 */
+  --accent: #c96442;         /* Claude tawny orange */
+  --accent-hover: #b85636;
+  --accent-light: #fef3ee;   /* orange-50 accent bg */
+  --accent-muted: #f5c6a8;   /* light accent */
+  --success: #16a34a;
+  --success-light: #f0fdf4;
+  --error: #dc2626;
+  --error-light: #fef2f2;
+  --warning: #ca8a04;
+  --warning-light: #fefce8;
+}
+
+/* ── 自定义滚动条（Claude-style, 极细淡雅） ── */
+
+/* Webkit (Chrome/Edge/Safari/Tauri WebView) */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(168, 162, 158, 0.25); /* stone-400/25 */
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(168, 162, 158, 0.45); /* stone-400/45 */
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(168, 162, 158, 0.25) transparent;
+}

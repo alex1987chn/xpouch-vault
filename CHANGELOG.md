@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-04-09
+
+### Added
+
+- **9 AI Provider Support** — Added MiniMax, Kimi, Qwen, Doubao, GLM providers alongside existing OpenAI, Anthropic, Google AI, DeepSeek, Custom
+- **Provider Brand Icons** — Integrated `@lobehub/icons` for authentic brand logos on each provider's key card
+- **Ping Result Persistence** — Health ping results (`is_valid` + `last_tested`) are now written back to SQLite; card validity badge reflects real status after testing
+- **i18n Provider Names** — All 9 providers have trilingual translations (zh/en/ja)
+- **GitHub Actions CI** — Cross-platform build workflow for Windows (.msi/.exe) and macOS (.dmg) on tag push
+
+### Changed
+
+- **Claude-Inspired Design** — Complete UI redesign from dark cyberpunk to Claude's warm, elegant aesthetic:
+  - Color system: slate dark → stone warm white, emerald → tawny orange (#c96442) accent
+  - Rounded corners: `rounded-xl` (12px) → `rounded-2xl` (16px)
+  - Cards: dark glass → white with subtle shadows and accent borders
+  - Buttons: emerald solid → tawny orange
+  - Scrollbars: slim 5px stone-tinted
+  - Typography: slate-100/500/600 → stone-900/600/400
+  - CSS custom properties for consistent theming across all components
+- **Sidebar** — Simplified logo area with original vault door animation in warm tones
+- **Search Bar** — Fixed width (w-52) instead of flex-1, no longer monopolizes header space
+- **Provider Filters** — Flex-wrap layout with better spacing and accent-tinted selected state
+- **Key Card** — Shows `createdAt` instead of `updatedAt`; ping/edit no longer change sort order
+- **List Sorting** — Changed from `ORDER BY updated_at DESC` to `ORDER BY created_at DESC` — cards stay in creation order
+- **Ping Side Effect** — `update_ping_result()` no longer updates `updated_at` column
+- **Package Name** — Cargo package renamed from `tauri-app` to `xpouch-vault`, lib renamed to `xpouch_vault_lib`
+
+### Fixed
+
+- Ping result not persisted — `is_valid` was never written to DB, cards always showed "Untested" after refresh
+- Card position jumping after ping/edit — `updated_at` was being updated, causing sort order changes
+
 ## [0.2.0] - 2026-04-09
 
 ### Added

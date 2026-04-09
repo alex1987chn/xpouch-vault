@@ -46,39 +46,96 @@ pub struct PingResult {
     pub message: String,
 }
 
-/// Provider 探活配置
+/// Provider 探活配置（支持多 header + 多种探活方式）
 struct PingEndpoint {
     url: String,
-    header_name: String,
-    header_value: String,
+    headers: Vec<(String, String)>,
+    /// 探活方式：GET 请求或 POST 最小 chat 请求
+    method: PingMethod,
+    /// POST body（仅 method == Chat 时使用）
+    body: Option<String>,
+}
+
+/// 探活方式
+enum PingMethod {
+    /// GET /v1/models — 标准 OpenAI 兼容端点
+    ModelsList,
+    /// POST /v1/chat/completions — 发送最小 chat 请求验证 key
+    ChatCompletions,
 }
 
 fn get_ping_endpoint(provider: &str, key: &str) -> PingEndpoint {
     match provider {
         "openai" => PingEndpoint {
             url: "https://api.openai.com/v1/models".to_string(),
-            header_name: "Authorization".to_string(),
-            header_value: format!("Bearer {key}"),
+            headers: vec![("Authorization".to_string(), format!("Bearer {key}"))],
+            method: PingMethod::ModelsList,
+            body: None,
         },
         "anthropic" => PingEndpoint {
             url: "https://api.anthropic.com/v1/models".to_string(),
-            header_name: "x-api-key".to_string(),
-            header_value: key.to_string(),
+            headers: vec![
+                ("x-api-key".to_string(), key.to_string()),
+                ("anthropic-version".to_string(), "2023-06-01".to_string()),
+            ],
+            method: PingMethod::ModelsList,
+            body: None,
         },
         "google" => PingEndpoint {
             url: format!("https://generativelanguage.googleapis.com/v1beta/models?key={key}"),
-            header_name: "Content-Type".to_string(),
-            header_value: "application/json".to_string(),
+            headers: vec![],
+            method: PingMethod::ModelsList,
+            body: None,
         },
         "deepseek" => PingEndpoint {
             url: "https://api.deepseek.com/v1/models".to_string(),
-            header_name: "Authorization".to_string(),
-            header_value: format!("Bearer {key}"),
+            headers: vec![("Authorization".to_string(), format!("Bearer {key}"))],
+            method: PingMethod::ModelsList,
+            body: None,
+        },
+        // MiniMax 不提供 /v1/models 端点，用最小 chat 请求验证
+        "minimax" => PingEndpoint {
+            url: "https://api.minimaxi.com/v1/chat/completions".to_string(),
+            headers: vec![
+                ("Authorization".to_string(), format!("Bearer {key}")),
+                ("Content-Type".to_string(), "application/json".to_string()),
+            ],
+            method: PingMethod::ChatCompletions,
+            body: Some(r#"{"model":"MiniMax-M2.7","messages":[{"role":"user","content":"hi"}],"max_tokens":1}"#.to_string()),
+        },
+        "kimi" => PingEndpoint {
+            url: "https://api.moonshot.cn/v1/models".to_string(),
+            headers: vec![("Authorization".to_string(), format!("Bearer {key}"))],
+            method: PingMethod::ModelsList,
+            body: None,
+        },
+        "qwen" => PingEndpoint {
+            url: "https://dashscope.aliyuncs.com/compatible-mode/v1/models".to_string(),
+            headers: vec![("Authorization".to_string(), format!("Bearer {key}"))],
+            method: PingMethod::ModelsList,
+            body: None,
+        },
+        // 豆包/火山方舟 /api/v3/models 端点可能不可用，用最小 chat 请求验证
+        "doubao" => PingEndpoint {
+            url: "https://ark.cn-beijing.volces.com/api/v3/chat/completions".to_string(),
+            headers: vec![
+                ("Authorization".to_string(), format!("Bearer {key}")),
+                ("Content-Type".to_string(), "application/json".to_string()),
+            ],
+            method: PingMethod::ChatCompletions,
+            body: Some(r#"{"model":"doubao-1.5-pro-32k","messages":[{"role":"user","content":"hi"}],"max_tokens":1}"#.to_string()),
+        },
+        "glm" => PingEndpoint {
+            url: "https://open.bigmodel.cn/api/paas/v4/models".to_string(),
+            headers: vec![("Authorization".to_string(), format!("Bearer {key}"))],
+            method: PingMethod::ModelsList,
+            body: None,
         },
         _ => PingEndpoint {
             url: "https://api.openai.com/v1/models".to_string(),
-            header_name: "Authorization".to_string(),
-            header_value: format!("Bearer {key}"),
+            headers: vec![("Authorization".to_string(), format!("Bearer {key}"))],
+            method: PingMethod::ModelsList,
+            body: None,
         },
     }
 }
@@ -100,39 +157,61 @@ pub async fn ping_api_key(state: State<'_, DbState>, id: String) -> Result<PingR
 
     let start = std::time::Instant::now();
 
-    let request = if endpoint.header_name == "Content-Type" {
-        client.get(&endpoint.url)
-    } else {
-        client
-            .get(&endpoint.url)
-            .header(&endpoint.header_name, &endpoint.header_value)
+    let response = match endpoint.method {
+        PingMethod::ModelsList => {
+            let mut req = client.get(&endpoint.url);
+            for (name, value) in &endpoint.headers {
+                req = req.header(name.as_str(), value.as_str());
+            }
+            req.send().await
+        }
+        PingMethod::ChatCompletions => {
+            let body = endpoint.body.as_deref().unwrap_or("{}");
+            let mut req = client.post(&endpoint.url).body(body.to_string());
+            for (name, value) in &endpoint.headers {
+                req = req.header(name.as_str(), value.as_str());
+            }
+            req.send().await
+        }
     };
-
-    let response = request.send().await;
     let latency_ms = start.elapsed().as_millis() as u64;
 
-    match response {
+    let result = match response {
         Ok(resp) => {
             let status = resp.status();
-            if status.is_success() {
-                Ok(PingResult {
+            let status_code = status.as_u16();
+
+            // ChatCompletions 模式：200 成功；400/404/422 等说明认证通过但请求参数问题
+            // 关键判断：401/403 = key 无效，其他非 5xx = key 有效（至少认证通过）
+            let is_auth_ok = match &endpoint.method {
+                PingMethod::ModelsList => status.is_success(),
+                PingMethod::ChatCompletions => {
+                    status.is_success() || (status_code >= 400 && status_code < 500 && status_code != 401 && status_code != 403)
+                }
+            };
+
+            if is_auth_ok {
+                let label = match &endpoint.method {
+                    PingMethod::ModelsList => "测试通过",
+                    PingMethod::ChatCompletions => "认证通过",
+                };
+                PingResult {
                     success: true,
                     latency_ms,
-                    message: format!("测试通过 {}ms", latency_ms),
-                })
+                    message: format!("{} {}ms", label, latency_ms),
+                }
             } else {
-                let status_code = status.as_u16();
                 let msg = match status_code {
                     401 => "密钥无效 (401 Unauthorized)".to_string(),
                     403 => "权限不足 (403 Forbidden)".to_string(),
                     429 => "请求过频 (429 Rate Limited)".to_string(),
                     _ => format!("请求失败 (HTTP {})", status_code),
                 };
-                Ok(PingResult {
+                PingResult {
                     success: false,
                     latency_ms,
                     message: msg,
-                })
+                }
             }
         }
         Err(e) => {
@@ -143,13 +222,23 @@ pub async fn ping_api_key(state: State<'_, DbState>, id: String) -> Result<PingR
             } else {
                 format!("网络错误: {}", e)
             };
-            Ok(PingResult {
+            PingResult {
                 success: false,
                 latency_ms,
                 message: msg,
-            })
+            }
+        }
+    };
+
+    // 回写探活结果到数据库
+    {
+        let conn = state.conn.lock().map_err(|e: std::sync::PoisonError<_>| e.to_string())?;
+        if let Err(e) = db::update_ping_result(&conn, &id, result.success) {
+            eprintln!("回写探活结果失败: {}", e);
         }
     }
+
+    Ok(result)
 }
 
 // ── OpenClaw Node Commands ──

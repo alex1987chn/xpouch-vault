@@ -1,54 +1,72 @@
-import { NavLink, Outlet } from "react-router";
+﻿import { NavLink, Outlet } from "react-router";
 import { KeyRound, Shell } from "lucide-react";
 import Toast from "./components/Toast";
+import VaultLogo from "./components/VaultLogo";
+import LanguageSwitcher from "./components/LanguageSwitcher";
+import { useI18n } from "./i18n";
 
-const navItems = [
-  { to: "/", label: "密钥库", icon: KeyRound, end: true },
-  { to: "/lobster", label: "龙虾监控", icon: Shell, end: false },
-] as const;
+const navKeys = [
+  { to: "/", labelKey: "nav.vault" as const, icon: KeyRound, end: true },
+  { to: "/lobster", labelKey: "nav.lobster" as const, icon: Shell, end: false },
+];
 
 export default function App() {
+  const { t } = useI18n();
+
   return (
-    <div className="flex h-screen bg-gray-950 text-gray-100">
+    <div className="flex h-screen" style={{ background: "var(--bg-base)", color: "var(--text-primary)" }}>
       {/* Sidebar */}
-      <aside className="flex w-56 flex-shrink-0 flex-col border-r border-gray-800 bg-gray-900">
+      <aside className="flex w-60 flex-shrink-0 flex-col border-r" style={{ borderColor: "var(--border-default)", background: "var(--bg-surface)" }}>
         {/* Logo */}
-        <div className="flex items-center gap-2 border-b border-gray-800 px-5 py-4">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-cyan-500/20 text-cyan-400">
-            <KeyRound size={18} />
+        <div className="flex items-center gap-3 px-5 py-5">
+          <VaultLogo />
+          <div className="flex flex-col justify-center">
+            <h1 className="text-sm font-bold leading-none flex items-center tracking-tight">
+              <span style={{ color: "var(--text-tertiary)" }}>[</span>
+              <span style={{ color: "var(--accent)" }}>X</span>
+              <span style={{ color: "var(--text-primary)" }}>POUCH</span>
+              <span style={{ color: "var(--text-tertiary)" }}>]</span>
+            </h1>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <div className="w-1 h-1 rounded-full animate-pulse" style={{ background: "var(--accent)" }} />
+              <span className="font-mono text-[9px] tracking-widest" style={{ color: "var(--text-tertiary)" }}>
+                VAULT
+              </span>
+            </div>
           </div>
-          <span className="text-sm font-bold tracking-wide text-cyan-400">
-            XPouch Vault
-          </span>
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 space-y-1 px-3 py-4">
-          {navItems.map(({ to, label, icon: Icon, end }) => (
+        <nav className="flex-1 space-y-0.5 px-3 py-2">
+          {navKeys.map(({ to, labelKey, icon: Icon, end }) => (
             <NavLink
               key={to}
               to={to}
               end={end}
               className={({ isActive }) =>
                 [
-                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                  "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all",
                   isActive
-                    ? "bg-cyan-500/10 text-cyan-400 shadow-[inset_0_0_0_1px_rgba(6,182,212,0.2)]"
-                    : "text-gray-400 hover:bg-gray-800 hover:text-gray-200",
+                    ? "text-[var(--accent)]"
+                    : "hover:bg-[var(--bg-muted)]",
                 ].join(" ")
               }
+              style={({ isActive }) => ({
+                background: isActive ? "var(--accent-light)" : undefined,
+              })}
             >
               <Icon size={18} />
-              {label}
+              {t(labelKey)}
             </NavLink>
           ))}
         </nav>
 
         {/* Footer */}
-        <div className="border-t border-gray-800 px-5 py-3">
-          <p className="text-[10px] tracking-widest text-gray-600 uppercase">
+        <div className="border-t px-5 py-3 flex items-center justify-between" style={{ borderColor: "var(--border-subtle)" }}>
+          <p className="text-[10px] tracking-wide" style={{ color: "var(--text-tertiary)" }}>
             v0.1.0
           </p>
+          <LanguageSwitcher />
         </div>
       </aside>
 

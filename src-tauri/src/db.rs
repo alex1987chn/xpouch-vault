@@ -90,7 +90,7 @@ pub fn list_entries(conn: &Connection) -> SqlResult<Vec<VaultEntry>> {
     let mut stmt = conn.prepare(
         "SELECT id, provider, encrypted_key, masked_key, name, category,
                 created_at, updated_at, last_tested, is_valid
-         FROM vault_entries ORDER BY updated_at DESC",
+         FROM vault_entries ORDER BY created_at DESC",
     )?;
 
     let entries = stmt
@@ -222,6 +222,17 @@ pub fn get_entry(conn: &Connection, id: &str) -> Result<VaultEntry, String> {
         },
     )
     .map_err(|e| e.to_string())
+}
+
+/// 更新探活结果（is_valid + last_tested），不更新 updated_at
+pub fn update_ping_result(conn: &Connection, id: &str, is_valid: bool) -> Result<(), String> {
+    let now = now_iso();
+    conn.execute(
+        "UPDATE vault_entries SET is_valid = ?1, last_tested = ?2 WHERE id = ?3",
+        params![is_valid, now, id],
+    )
+    .map_err(|e| e.to_string())?;
+    Ok(())
 }
 
 /// 解密指定条目的 API Key（用于复制/探活等场景）

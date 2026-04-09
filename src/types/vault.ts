@@ -1,4 +1,14 @@
-export type KeyProvider = "openai" | "anthropic" | "google" | "deepseek" | "custom";
+﻿export type KeyProvider =
+  | "openai"
+  | "anthropic"
+  | "google"
+  | "deepseek"
+  | "minimax"
+  | "kimi"
+  | "qwen"
+  | "doubao"
+  | "glm"
+  | "custom";
 
 export interface VaultEntry {
   id: string;
@@ -27,15 +37,25 @@ export const PROVIDER_LABELS: Record<KeyProvider, string> = {
   anthropic: "Anthropic",
   google: "Google AI",
   deepseek: "DeepSeek",
+  minimax: "MiniMax",
+  kimi: "Kimi",
+  qwen: "Qwen",
+  doubao: "Doubao",
+  glm: "GLM",
   custom: "自定义",
 };
 
 export const PROVIDER_COLORS: Record<KeyProvider, string> = {
-  openai: "text-green-400",
-  anthropic: "text-orange-400",
-  google: "text-blue-400",
-  deepseek: "text-purple-400",
-  custom: "text-gray-400",
+  openai: "text-green-600",
+  anthropic: "text-orange-600",
+  google: "text-blue-600",
+  deepseek: "text-purple-600",
+  minimax: "text-sky-600",
+  kimi: "text-indigo-600",
+  qwen: "text-violet-600",
+  doubao: "text-rose-600",
+  glm: "text-cyan-600",
+  custom: "text-stone-500",
 };
 
 export const DEFAULT_CATEGORIES = [

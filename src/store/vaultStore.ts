@@ -99,7 +99,7 @@ export const useVaultStore = create<VaultState>((set, get) => ({
         },
       });
       set((state) => ({
-        entries: [...state.entries, toVaultEntry(raw)],
+        entries: [toVaultEntry(raw), ...state.entries],
       }));
     } catch (e) {
       set({ error: String(e) });
@@ -167,6 +167,8 @@ export const useVaultStore = create<VaultState>((set, get) => ({
         result.success ? `✅ ${result.message}` : `❌ ${result.message}`,
         result.success ? "success" : "error",
       );
+      // ping 后刷新列表，让 isValid/lastTested 从 DB 重新加载
+      await get().fetchEntries();
     } catch (e) {
       useToastStore.getState().addToast(`❌ 探活失败: ${e}`, "error");
     } finally {

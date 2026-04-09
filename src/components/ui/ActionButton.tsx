@@ -1,4 +1,4 @@
-import type { LucideIcon } from "lucide-react";
+﻿import type { LucideIcon } from "lucide-react";
 
 interface ActionButtonProps {
   icon: LucideIcon;
@@ -9,21 +9,38 @@ interface ActionButtonProps {
   loading?: boolean;
 }
 
-const variantStyles = {
-  default: "text-gray-500 hover:bg-gray-700 hover:text-gray-300",
-  danger: "text-gray-600 hover:bg-red-500/10 hover:text-red-400",
-  warning: "text-gray-500 hover:bg-yellow-500/10 hover:text-yellow-400",
-};
-
 export default function ActionButton({ icon: Icon, onClick, title, disabled, variant = "default", loading }: ActionButtonProps) {
+  const getColor = () => {
+    if (variant === "danger") return { color: "var(--text-tertiary)", hoverBg: "var(--error-light)", hoverColor: "var(--error)" };
+    if (variant === "warning") return { color: "var(--text-tertiary)", hoverBg: "var(--warning-light)", hoverColor: "var(--warning)" };
+    return { color: "var(--text-tertiary)", hoverBg: "var(--bg-muted)", hoverColor: "var(--text-secondary)" };
+  };
+
+  const colors = getColor();
+
   return (
     <button
       onClick={onClick}
-      className={`rounded-lg p-1.5 transition-all ${variantStyles[variant]} disabled:opacity-40 disabled:cursor-not-allowed`}
+      className="rounded-lg p-1.5 transition-all disabled:cursor-not-allowed disabled:opacity-40"
+      style={{ color: colors.color }}
       title={title}
       disabled={disabled}
+      onMouseEnter={(e) => {
+        if (!disabled) {
+          e.currentTarget.style.background = colors.hoverBg;
+          e.currentTarget.style.color = colors.hoverColor;
+        }
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.background = "transparent";
+        e.currentTarget.style.color = colors.color;
+      }}
     >
-      {loading ? <span className="inline-block h-[13px] w-[13px] animate-spin rounded-full border-2 border-current border-t-transparent" /> : <Icon size={13} />}
+      {loading ? (
+        <span className="inline-block h-[13px] w-[13px] animate-spin rounded-full border-2 border-current border-t-transparent" />
+      ) : (
+        <Icon size={13} />
+      )}
     </button>
   );
 }

@@ -1,4 +1,4 @@
-import type { LucideIcon } from "lucide-react";
+﻿import type { LucideIcon } from "lucide-react";
 
 interface PageHeaderProps {
   icon: LucideIcon;
@@ -8,17 +8,17 @@ interface PageHeaderProps {
   action?: React.ReactNode;
 }
 
-export default function PageHeader({ icon: Icon, iconClassName = "text-cyan-400", title, description, action }: PageHeaderProps) {
+export default function PageHeader({ icon: Icon, iconClassName, title, description, action }: PageHeaderProps) {
   return (
-    <div className="border-b border-gray-800 px-8 py-6">
+    <div className="border-b px-8 py-6" style={{ borderColor: "var(--border-default)", background: "var(--bg-surface)" }}>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="flex items-center gap-3 text-2xl font-bold text-gray-100">
-            <Icon className={iconClassName} size={28} />
+          <h1 className="flex items-center gap-3 text-xl font-semibold" style={{ color: "var(--text-primary)" }}>
+            <Icon size={24} className={iconClassName} style={{ color: iconClassName ? undefined : "var(--accent)" }} />
             {title}
           </h1>
           {description && (
-            <p className="mt-1 text-sm text-gray-500">{description}</p>
+            <p className="mt-1 text-sm" style={{ color: "var(--text-tertiary)" }}>{description}</p>
           )}
         </div>
         {action}

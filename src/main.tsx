@@ -1,4 +1,4 @@
-import { StrictMode, lazy, Suspense } from "react";
+﻿import { StrictMode, lazy, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { HashRouter, Routes, Route } from "react-router";
 import App from "./App";
@@ -10,7 +10,7 @@ const LobsterPage = lazy(() => import("./pages/LobsterPage"));
 function PageLoader() {
   return (
     <div className="flex h-full items-center justify-center">
-      <div className="h-6 w-6 animate-spin rounded-full border-2 border-cyan-400 border-t-transparent" />
+      <div className="h-6 w-6 animate-spin rounded-full border-2 border-emerald-400 border-t-transparent" />
     </div>
   );
 }

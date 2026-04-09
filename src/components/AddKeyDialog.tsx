@@ -7,7 +7,9 @@ import {
   type VaultFormData,
 } from "../types/vault";
 import Dialog from "./ui/Dialog";
+import DialogActions from "./ui/DialogActions";
 import { Input, Select } from "./ui/Form";
+import { useI18n } from "../i18n";
 
 interface AddKeyDialogProps {
   open: boolean;
@@ -15,6 +17,7 @@ interface AddKeyDialogProps {
 }
 
 export default function AddKeyDialog({ open, onClose }: AddKeyDialogProps) {
+  const { t } = useI18n();
   const addEntry = useVaultStore((s) => s.addEntry);
   const [form, setForm] = useState<VaultFormData>({
     provider: "openai",
@@ -34,62 +37,53 @@ export default function AddKeyDialog({ open, onClose }: AddKeyDialogProps) {
   }
 
   return (
-    <Dialog open={open} onClose={onClose}>
-      <h2 className="text-lg font-semibold text-gray-100">添加 API Key</h2>
-
-      <form onSubmit={handleSubmit} className="mt-5 space-y-4">
+    <Dialog open={open} onClose={onClose} title={t("addKey.title")}>
+      <form onSubmit={handleSubmit} className="space-y-4">
         <Select
-          label="服务商"
+          label={t("addKey.providerLabel")}
           value={form.provider}
           onChange={(e) =>
             setForm((f) => ({ ...f, provider: e.target.value as KeyProvider }))
           }
           options={(Object.keys(PROVIDER_LABELS) as KeyProvider[]).map((p) => ({
             value: p,
-            label: PROVIDER_LABELS[p],
+            label: t(`provider.${p}`),
           }))}
         />
 
         <Input
-          label="名称"
+          label={t("addKey.nameLabel")}
           required
           value={form.name}
           onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-          placeholder="例：GPT-4o 主力 Key"
+          placeholder={t("addKey.namePlaceholder")}
         />
 
         <Input
-          label="API Key"
+          label={t("addKey.keyLabel")}
           required
           type="password"
           value={form.apiKey}
           onChange={(e) => setForm((f) => ({ ...f, apiKey: e.target.value }))}
-          placeholder="sk-..."
+          placeholder={t("addKey.keyPlaceholder")}
         />
 
         <Select
-          label="分类"
+          label={t("addKey.categoryLabel")}
           value={form.category}
           onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
-          options={DEFAULT_CATEGORIES.map((c) => ({ value: c, label: c }))}
+          options={DEFAULT_CATEGORIES.map((c) => ({
+            value: c,
+            label: t(`category.${c === "生产环境" ? "production" : c === "开发测试" ? "development" : c === "个人项目" ? "personal" : "backup"}`),
+          }))}
         />
 
-        <div className="flex justify-end gap-3 pt-2">
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-lg px-4 py-2 text-sm text-gray-400 transition-colors hover:bg-gray-800 hover:text-gray-200"
-          >
-            取消
-          </button>
-          <button
-            type="submit"
-            disabled={!canSubmit}
-            className="rounded-lg bg-cyan-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-cyan-500 disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            添加
-          </button>
-        </div>
+        <DialogActions
+          onCancel={onClose}
+          confirmLabel={t("addKey.submit")}
+          confirmDisabled={!canSubmit}
+          type="submit"
+        />
       </form>
     </Dialog>
   );

@@ -1,10 +1,4 @@
-import { useToastStore } from "../store/toastStore";
-
-const typeStyles: Record<string, string> = {
-  success: "bg-emerald-500/90 text-white",
-  error: "bg-red-500/90 text-white",
-  info: "bg-gray-700/90 text-gray-100",
-};
+﻿import { useToastStore } from "../store/toastStore";
 
 export default function Toast() {
   const toasts = useToastStore((s) => s.toasts);
@@ -12,13 +6,25 @@ export default function Toast() {
 
   if (toasts.length === 0) return null;
 
+  const getStyle = (type: string) => {
+    switch (type) {
+      case "success":
+        return { background: "var(--success)", color: "#fff" };
+      case "error":
+        return { background: "var(--error)", color: "#fff" };
+      default:
+        return { background: "var(--text-primary)", color: "var(--bg-base)" };
+    }
+  };
+
   return (
     <div className="pointer-events-none fixed bottom-6 right-6 z-50 flex flex-col gap-2">
       {toasts.map((t) => (
         <div
           key={t.id}
           onClick={() => removeToast(t.id)}
-          className={`pointer-events-auto animate-in fade-in slide-in-from-bottom-2 cursor-pointer rounded-lg px-4 py-2.5 text-sm font-medium shadow-lg transition-all hover:scale-105 ${typeStyles[t.type]}`}
+          className="pointer-events-auto cursor-pointer rounded-xl px-4 py-2.5 text-sm font-medium shadow-lg transition-all hover:scale-105"
+          style={getStyle(t.type)}
         >
           {t.message}
         </div>
